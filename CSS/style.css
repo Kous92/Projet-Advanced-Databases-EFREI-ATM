@@ -1,0 +1,372 @@
+@font-face 
+{
+	/* La police d'écriture officielle de l'EFREI */
+    font-family: 'NeoSansIntel';
+    src: url('/polices/NeoSansIntel.eot');
+    src: url('/polices/NeoSansIntel.eot?#iefix') format('embedded-opentype'),
+         url('/polices/NeoSansIntel.woff2') format('woff2'),
+         url('/polices/NeoSansIntel.woff') format('woff'),
+         url('/polices/NeoSansIntel.ttf') format('truetype'),
+         url('/polices/NeoSansIntel.svg#00499') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, body
+{
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-size: 100%;
+}
+
+body
+{
+	font-family: sans-serif;
+	font-family: 'NeoSansIntel', Arial, sans-serif;
+    background-size: cover;
+    background: linear-gradient(white, #6E6E6E, #2E2E2E);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+/* ==========================================================
+   ZONE D'EN TÊTE ET DU MENU DE NAVIGATION DU SITE
+   ========================================================== */
+header
+{
+	background: #057CFB;
+	width: 100%;
+	padding: 0;
+	color: white;
+	text-align: center;
+	border-bottom: 1px solid black;
+}
+
+h1
+{
+	display: inline-block;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px;
+	border: none;
+	text-align: center;
+	-o-text-overflow: clip;
+	text-overflow: clip;
+	overflow-wrap: break-word;
+	white-space: pre;
+}
+
+h3
+{
+    text-align: center;
+    text-shadow: 0 0 10px rgba(0,8,255,1),
+                 0 0 20px rgba(0,8,255,1), 
+                 0 0 30px rgba(0,8,255,1);
+}
+
+#enveloppe
+{
+    min-height: 65%;
+    position: relative;
+}
+
+/* ==========================================================
+   ZONE DU CONTENU DU SITE
+   ========================================================== */
+#contenu 
+{
+    padding-bottom: 150px; /* Height of the footer element */
+}
+
+div.zone_affichage
+{
+    width: 85%;
+    margin-top: 3%;
+    margin-left: 7.5%;
+    /* border: 1px solid #057CFB; */
+    border-radius: 8px;
+    display: flex;
+    color: white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 150%;
+    /* background-color: rgba(0, 0, 0, 0.8); */
+}
+
+div.zone_actions
+{
+    width: 100%;
+    margin-top: 3%;
+    /* border: 1px solid #057CFB; */
+    border-radius: 8px;
+    display: flex;
+    color: white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 150%;
+    /* background-color: rgba(0, 0, 0, 0.8); */
+}
+
+#message
+{
+	text-align: center;
+	color: #057CFB;
+}
+
+#message_client
+{
+	text-align: center;
+	color: #057CFB;
+	font-size: 25px;
+}
+
+#decouvert
+{
+	color: red;
+	text-decoration: underline;
+}
+
+#positif
+{
+	/* color: #228B22; */
+	color: #32CD32
+}
+
+div.error_box
+{
+	height: 40px;
+	line-height: 40px;
+	color: white;
+	background-color: red;
+	border-radius: 8px;
+	border: 1px solid white;
+	word-wrap: break-word;
+    margin: auto;
+    margin-top: 3%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 20px;
+}
+
+div.success_box
+{
+	height: 40px;
+	width: 70%;
+	line-height: 40px;
+	color: white;
+	background-color: #228B22;
+	border-radius: 8px;
+	border: 1px solid white;
+	word-wrap: break-word;
+    margin: auto;
+    margin-top: 3%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 20px;
+}
+
+table.action
+{
+	width: 100%;
+	border-spacing: 10px 50px;
+}
+
+table.action td
+{
+    width: 25%;
+    text-align: center;
+}
+
+table.action td.left:hover, td.right:hover
+{
+    box-shadow: 0 0 10px blue;
+}
+
+table.action td.left
+{
+	height: 50px;
+	line-height: 50px;
+    text-align: left;
+    background-color: #057CFB;
+    padding-left: 3%;
+    border: 1px solid black;
+}
+
+table.action td.right
+{
+	height: 50px;
+	line-height: 50px;
+    text-align: right;
+    background-color: #057CFB;
+    padding-right: 3%;
+    border: 1px solid black;
+}
+
+div.retour
+{
+	height: 50px;
+	line-height: 50px;
+	width: 70%;
+	color: white;
+	background-color: #057CFB;
+	border-radius: 8px;
+	border: 1px solid black;
+	word-wrap: break-word;
+    margin: auto;
+    margin-top: 10%;
+    margin-bottom: 5%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 20px;
+}
+/* Le lien de base */
+a:link, a:visited
+{
+	color: black;
+	text-decoration: none;
+}
+
+/* Le lien au survol de la souris */
+a:hover, a:active
+{
+	color: white;
+}
+
+/* ==========================================================
+   SAISIE DU TEXTE
+   ========================================================== */
+input[type="password"], #valide, #invalide
+{
+    width: 15%; /* Pour les nombres avec beaucoup de chiffres */
+    padding: 20px 20px;
+    margin: 8px 0;
+    border-radius: 5px;
+    margin-left: 5px;
+    font-size: 15px;
+    text-align: center;
+    display: inline-block;
+    border: 2px solid #057CFB;
+    margin-left: 35%;
+    background: transparent;
+    color: #057CFB;
+}
+
+input[type="password"]:focus, #valide:focus, #invalide:focus
+{
+    width: 15%; /* Pour les nombres avec beaucoup de chiffres */
+    padding: 20px 20px;
+    margin: 8px 0;
+    border-radius: 5px;
+    margin-left: 5px;
+    font-size: 15px;
+    text-align: center;
+    display: inline-block;
+    box-shadow: 0 0 10px blue;
+    margin-left: 35%;
+    color: #057CFB;
+}
+
+input[type="password"]:hover, #valide:hover, #invalide:hover
+{
+    width: 15%; /* Pour les nombres avec beaucoup de chiffres */
+    padding: 20px 20px;
+    margin: 8px 0;
+    border-radius: 5px;
+    margin-left: 5px;
+    font-size: 15px;
+    text-align: center;
+    display: inline-block;
+    box-shadow: 0 0 10px blue;
+    margin-left: 35%;
+    color: #057CFB;
+}
+
+/* =================================================================== */
+/* BOUTON DE VALIDATION */
+input[type="submit"]
+{
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+    padding: 20px 45px;
+    margin: 4px 2px;
+    background: rgba(0, 255, 0, 1);
+    border: 1px solid black;
+    color: black;
+    font-size: 20px;
+    border-radius: 8px;
+    margin-left: 35%;
+}
+
+/* Au survol: texte et ombre verte */
+input[type="submit"]:hover
+{
+    border: 1px solid rgba(0, 255, 0, 1);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 1);
+    padding: 20px 45px;
+    margin: 4px 2px;
+    background: black;
+    font-size: 20px;
+    color: rgba(0, 255, 0, 1);
+    margin-left: 35%;
+}
+
+/* =================================================================== */
+/* BOUTON DE RÉINITIALISATION */
+input[type="reset"]
+{
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+    padding: 20px 30px;
+    margin: 4px 2px;
+    margin: auto;
+    border: 1px solid black;
+    font-size: 20px;
+    border-radius: 8px;
+    background: red;
+    color: black;
+    margin: 15%;
+}
+
+/* Au survol: texte et ombre rouge */
+input[type="reset"]:hover
+{
+    border: 1px solid red;
+    box-shadow: 0 0 10px red;
+    padding: 20px 30px;
+    margin: 4px 2px;
+    margin: auto;
+    font-size: 20px;
+    border: 1px solid red;
+    border-radius: 8px;
+    background: black;
+    color: red;
+    margin: 15%;
+}
+
+#pied_page
+{
+    background: #057CFB;
+    color: white;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid black;
+    text-align: center;
+    height: 100px;
+    line-height: 100px;
+}
