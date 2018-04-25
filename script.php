@@ -28,8 +28,9 @@ function addCreditCard()
 	// Requête en mode sécurisé pour le mode préparé
     $SQLCommand = "INSERT INTO CarteBancaire(cardID, clientID_fk, codeSecret, typeCarte) VALUES (NULL, 4, '$codeSecretHash', 'Visa')";
     */
-    // $SQLCommand = "INSERT INTO CompteCourant(compteID, clientID, solde, dateCreation) VALUES (NULL, 1, 2854.75 , '2018-04-11')";
-    // $resultat = $bdd->exec($SQLCommand);
+    
+    $SQLCommand = "INSERT INTO CompteCourant(compteID, clientID, solde, dateCreation) VALUES (NULL, 1, 2854.75 , '2018-04-11')";
+    $resultat = $bdd->exec($SQLCommand);
 
     // Requête d'ajout préparée pour plus de sécurité dans la base de données MySQL
     /*

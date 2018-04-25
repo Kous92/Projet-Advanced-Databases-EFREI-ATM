@@ -33,12 +33,16 @@
 	    exit();
 	}
 
+	// Pour le retrait, un 2ème token doit être créé pour sécuriser la transaction
+	$_SESSION['token_retrait'] = generateToken(50);
+
 	// Chaque redirection doit être sécurisée par un token, chaque page ira authentifier la session avec le token 
-	$retrait = "<a href=\"retrait.php?token=" . $_SESSION['token'] . "\">Retrait</a>";
-	$depot = "<a href=\"depot.php?token=" . $_SESSION['token'] . "\">Vos informations</a>";
-	$solde = "<a href=\"solde.php?token=" . $_SESSION['token'] . "\">Consultation de compte</a>";
-	$releve = "<a href=\"releve_compte.php?token=" . $_SESSION['token'] . "\">Relevé de compte</a>";
-	$informations = "<a href=\"informations.php?token=" . $_SESSION['token'] . "\">Vos informations</a>";
+	$retrait1 = "<a href=\"operation_retrait.php?token=" . $_SESSION['token'] . "&token_retrait=" . $_SESSION['token_retrait'] . "&montant=10\">10€ </a>";
+	$retrait2 = "<a href=\"operation_retrait.php?token=" . $_SESSION['token'] . "&token_retrait=" . $_SESSION['token_retrait'] . "&montant=20\">20€</a>";
+	$retrait3 = "<a href=\"operation_retrait.php?token=" . $_SESSION['token'] . "&token_retrait=" . $_SESSION['token_retrait'] . "&montant=50\">50€</a>";
+	$retrait4 = "<a href=\"operation_retrait.php?token=" . $_SESSION['token'] . "&token_retrait=" . $_SESSION['token_retrait'] . "&montant=100\">100€</a>";
+	$retrait5 = "<a href=\"autre_montant.php?token=" . $_SESSION['token'] . "&token_retrait=" . $_SESSION['token_retrait'] . "\">Autre montant</a>";
+	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Retour</a>"
 ?>
 
 <!DOCTYPE html>
@@ -64,7 +68,7 @@
 			<!-- <div class="zone_actions"> -->
 				<form action="" method="POST">
 
-					<p id="message_client">Bienvenue, choisissez l'opération que vous voulez faire.</p></label></td>
+					<p id="message_client">Sélectionnez un montant à retirer</p></label></td>
 
 					<?php  
 						if (isset($_GET['success']))
@@ -75,24 +79,24 @@
 
 					<table class="action">
 						<tr>
-							<td class="left"><?php echo $retrait ?></td>
+							<td class="left"><?php echo $retrait1 ?></td>
 							<td></td>
 							<td></td>
-							<td class="right"><?php echo $depot ?></td>
+							<td class="right"><?php echo $retrait2 ?></td>
 						</tr>
 
 						<tr>
-							<td class="left"><?php echo $solde ?></td>
+							<td class="left"><?php echo $retrait3 ?></td>
 							<td></td>
 							<td></td>
-							<td class="right"><?php echo $releve ?></td>
+							<td class="right"><?php echo $retrait4 ?></td>
 						</tr>
 
 						<tr>
-							<td class="left"><?php echo $informations ?></td>
+							<td class="left"><?php echo $retrait5 ?></td>
 							<td></td>
 							<td></td>
-							<td class="right"><a href="deconnexion.php">Récupérer votre carte bancaire</a></td>
+							<td class="right"><?php echo $retour ?></td>
 						</tr>
 					</table>
 				</form>

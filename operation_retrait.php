@@ -4,7 +4,7 @@
 	verifierConnexion();
 
 	// debug($_SESSION);
-	// debug($_GET);
+	debug($_GET);
 
 	$atm = null;
 	$solde = 0.0;
@@ -24,6 +24,16 @@
 		{
 			header('Location: index.php?error=3');
 	    	exit();
+		}
+
+		// Authentification et sécurité de la transaction (le token sera systématiquement détruit après la transaction)
+		if ((isset($_GET['token_retrait'])) && (isset($_SESSION['token_retrait'])))
+		{
+			if (authentificationToken($_GET['token_retrait'], $_SESSION['token_retrait']) == false)
+			{
+				header('Location: accueil.php?error=1');
+		    	exit();
+			}
 		}
 	}
 	else
@@ -63,9 +73,6 @@
 					}
 
 					$type_carte = $atm->getTypeCarte();
-					$date_naissance = $atm->getDateNaissance();
-					$date_creation = $atm->getDateCreation();
-					$numero_telephone = $atm->getNumeroTelephone();
 
 					if ($type_carte == "MasterCard")
 					{
@@ -79,16 +86,25 @@
 					{
 						echo "<p>Type de la carte bancaire: $type_carte</p>";
 					}
-				?>
+					
+					if (isset($_GET['montant']))
+					{
+						if ($atm->retrait($_GET['montant']))
+						{
+							$_SESSION['token_retrait'] = "";
+							echo "<p id=\"message_client\">Vous avez demandé " . $_GET['montant'] . "€<br>
+								  Veuillez recupérer vos billets.</p>";
+						}
+						else
+						{
+							echo "<p id=\"erreur\">ERREUR, solde insuffisant !</p>";
+						}
+					}
+					else
+					{
+						echo "<p id=\"message_client\">ERREUR !</p>";
+					}
 
-				<p> Vos informations personnelles liées à votre compte </p>
-				<ul>
-					<li>Compte créé le: <?php echo $date_creation ?></li>
-					<li>Numéro utilisé pour authentifier vos paiements en ligne: <?php echo $numero_telephone ?></li>
-					<li>Date de naissance: <?php echo $date_naissance ?></li>
-				</ul>
-
-				<?php
 					echo "<div class=\"retour\">" . $retour . "</div>";
 				?>
 			</div>

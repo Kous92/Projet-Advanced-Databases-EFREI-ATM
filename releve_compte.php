@@ -62,31 +62,8 @@
 						echo "<p id=\"message_client\">$identite</p>";
 					}
 
-					$type_carte = $atm->getTypeCarte();
-					$date_naissance = $atm->getDateNaissance();
-					$date_creation = $atm->getDateCreation();
-					$numero_telephone = $atm->getNumeroTelephone();
-
-					if ($type_carte == "MasterCard")
-					{
-						echo '<img src="mastercard_logo.png">';
-					}
-					else if ($type_carte == "Visa")
-					{
-						echo '<img src="visa_logo.png">';
-					}
-					else
-					{
-						echo "<p>Type de la carte bancaire: $type_carte</p>";
-					}
+					$atm->getReleveCompte();
 				?>
-
-				<p> Vos informations personnelles liées à votre compte </p>
-				<ul>
-					<li>Compte créé le: <?php echo $date_creation ?></li>
-					<li>Numéro utilisé pour authentifier vos paiements en ligne: <?php echo $numero_telephone ?></li>
-					<li>Date de naissance: <?php echo $date_naissance ?></li>
-				</ul>
 
 				<?php
 					echo "<div class=\"retour\">" . $retour . "</div>";

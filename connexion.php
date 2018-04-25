@@ -6,8 +6,11 @@
 	// Si au moins un caractère du code a été saisi
 	if (isset($_POST['code']))
 	{
-		$code = $_POST['code'];
+		$code = ($_POST['code']);
 		$code_secret = implode($code);
+
+		// Se protéger de la faille XSS est obligatoire !
+		$code_secret = htmlspecialchars($code_secret);
 
 		if (strlen($code_secret) < 1)
 		{
@@ -21,37 +24,50 @@
 		}
 		else
 		{
-			if (strlen($code_secret) < 4)
+			if ((strlen($code_secret) < 4) || (strlen($code_secret) > 4))
 			{
 				header('Location: index.php?error=2');
 				exit();
 			}
 			else
 			{
-				// Authentification
-				$atm = new ATM();
-				$atm = $atm->constructor($code_secret);
+				echo "1<br>";
 
-				// Le code est correct
-				if ($atm->authentification() == true)
+				if (is_numeric($code_secret) == true)
 				{
-					session_start();
-					$token = generateToken(50);
-					$_SESSION['auth'] = true;
-			    	$_SESSION['token'] = $token;
-			    	$_SESSION['prenom'] = $atm->getPrenom();
-			    	$_SESSION['nom'] = $atm->getNom();
-			    	$_SESSION['id'] = $atm->getID();
+					// Authentification
+					$atm = new ATM();
+					$atm = $atm->constructor($code_secret);
 
-			    	// debug($_SESSION);
-			    	// Redirection vers la page des opérations
-			    	header("Location: accueil.php?success=0");
-					exit();
+					// Le code est correct
+					if ($atm->authentification() == true)
+					{
+						session_start();
+						$token = generateToken(50);
+						$_SESSION['auth'] = true;
+				    	$_SESSION['token'] = $token;
+				    	$_SESSION['prenom'] = $atm->getPrenom();
+				    	$_SESSION['nom'] = $atm->getNom();
+				    	$_SESSION['id'] = $atm->getID();
+
+				    	// debug($_SESSION);
+				    	// Redirection vers la page des opérations
+				    	$redirection = "Location: accueil.php?success=0&token=" . $token;
+				    	// header("Location: accueil.php?success=0");
+				    	header($redirection);
+						exit();
+					}
+					else
+					{
+						// Le code est incorrect: redirection vers la page d'accueil
+						header('Location: index.php?error=0');
+						exit();
+					}
 				}
 				else
 				{
 					// Le code est incorrect: redirection vers la page d'accueil
-					header('Location: index.php?error=0');
+					// header('Location: index.php?error=0');
 					exit();
 				}
 			}

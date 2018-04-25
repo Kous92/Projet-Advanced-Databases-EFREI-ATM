@@ -321,22 +321,178 @@
 	        }
 		}
 
+		public function getReleveCompte()
+		{
+			/* requête SQL préparée: jointure de Clients et CarteBancaire avec la clé étrangère clientID_fk
+			   -> Requête SQL: SELECT nomClient FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = '$this->id_compte') */
+			$SQLCommand = "SELECT typeOperation, montant, dateOperation FROM Operations, CarteBancaire, Clients, CompteCourant WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = Operations.compteID AND CarteBancaire.clientID_fk = ?";
+	        $requete = $this->bdd_sql->prepare($SQLCommand);
+	        $resultat = $requete->execute(array($this->id_compte));
+
+	        // Pas de résultat: requête invalide
+	        if (!$resultat) 
+	        {
+	            die("<p>Erreur: Échec de la requête avec " .$SQLCommand. "</p>");
+	        }
+	        else
+	        {
+	        	if ($requete->rowCount() == 1)
+                {
+                    $chaine = "opération dans votre compte";
+                }
+                else
+                {
+                    $chaine = "opérations dans votre compte";
+                }
+
+	        	if ($requete->rowCount() > 0)
+    			{
+    				echo "<table class=\"display\">
+    						<tr>
+	                    		<td colspan=\"3\"><h2>". $requete->rowCount() ." " . $chaine . "<h2></td>
+		                	</tr>
+		                	
+		                	<tr>
+			                    <th class=\"date_op\">Date de l'opération</th>
+			                    <th class=\"type_op\">Type de l'opération</th>
+			                    <th class=\"montant\">Montant (€)</th>
+		                	</tr>";
+
+    				// Récupération du résultat
+    				while ($ligne = $requete->fetch())
+                	{
+	    				echo "<tr>
+	    				 		<td>" . $this->dateFormatFrancais($ligne['dateOperation']) . "</td>
+                                <td class=\"type_op\">" . $ligne['typeOperation'] ."</td>";
+
+                                if (($ligne['typeOperation'] == "Encaissement chèque") || ($ligne['typeOperation'] == "Crédit virement") || ($ligne['typeOperation'] == "Dépôt espèces"))
+                                {
+                                	echo "<td class=\"montant_positif\">+ " . $ligne['montant'] . " €</td>";
+                                }
+                                else
+                                {
+                                	echo "<td class=\"montant_depense\"> - " . $ligne['montant'] . " €</td>";
+                                }
+                                
+                            echo "</tr>";
+	            	}
+    				
+    				echo "</table>";
+    			}
+    			else
+    			{
+    				echo "<p>Aucune opération effectuée sur votre compte</p>";
+    			}
+	        }
+		}
+
+		// Retrait d'argent en espèces
+		public function retrait($montant)
+		{
+			/* La procédure de retrait se déroule en plusieurs étapes:
+			   1) On vérifie que le compte est suffisamment approvisionné par rapport au montant demandé
+			   2) On met à jour la base de données en enlevant dans le solde le montant retiré
+			   3) L'utilisateur sera systématiquement redirigé
+			*/
+
+			// 1) Vérification du solde
+			$solde = $this->getSolde();
+
+			// Les conditions de provision sur le compte bancaire sont réunies
+			if (($solde != null) && ($solde > $montant))
+			{
+				// Processus de retrait, requête UPDATE sur le compte + requête INSERT dans les opérations
+				$SQLCommand = "INSERT INTO Operations(operationID, compteID, montant, typeOperation, dateOperation) VALUES (:operationID, :compteID, :montant, :typeOperation, :dateOperation)";
+
+			    // Requête d'ajout préparée pour plus de sécurité dans la base de données MySQL
+			    $requete = $this->bdd_sql->prepare($SQLCommand);
+			    $requete->bindValue(':operationID', 'NULL', PDO::PARAM_STR); // operationID: clé primaire de la table MySQL.
+			    $requete->bindValue(':compteID', $this->id_compte);
+			    $requete->bindValue(':montant', $montant);
+			    $requete->bindValue(':typeOperation', 'Retrait', PDO::PARAM_STR);
+			    $requete->bindValue(':dateOperation', date("Y-m-d"), PDO::PARAM_STR);			    
+			    $resultat = $requete->execute();
+
+			    // Pas de résultat: requête invalide
+		        if (!$resultat) 
+		        {
+		            die("<p>Erreur: Échec de la requête avec " .$SQLCommand. "</p>");
+		            return false;
+		        }
+		        else
+		        {
+		        	$nouveau_solde = $solde - $montant;
+
+		        	// On modifie le solde du compte avec une requête préparée un peu complexe: une jointure dans une requête UPDATE requiert une sous requête SELECT avec des jointures.
+		        	$SQLCommand = "UPDATE CompteCourant SET solde = ? WHERE CompteCourant.clientID = (SELECT clientID FROM Clients, CarteBancaire WHERE Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = ?)";
+		        	$requete = $this->bdd_sql->prepare($SQLCommand);
+	        		$resultat2 = $requete->execute(array($nouveau_solde ,$this->id_compte));
+
+	        		if (!$resultat2) 
+			        {
+			            die("<p>Erreur: Échec de la requête avec " .$SQLCommand. "</p>");
+			            return false;
+			        }
+			        else
+			        {
+			        	return true;
+			        }
+		        }
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 		public function getID()
 		{
 			return $this->id_compte;
 		}
 	}
 
-	function logged_only()
+	// Un token aléatoire est nécessaire pour sécuriser une session
+	function generateToken($length)
+	{
+		// Le dictionnaire de caractères où il faut piocher un seul caractère au hasard
+	    $alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+	    /* 
+	    	str_shuffle: On pioche au hasard un caractère de l'alphabet
+	    	str_repeat: On répète le nombre de fois où il faut piocher un caractère aléatoire
+	    	substr: La longueur de la chaîne (sous-chaîne): début à 0, fin à la longueur souhaitée
+	    */
+	    $token = substr(str_shuffle(str_repeat($alphabet, $length)), 0, $length);
+
+	    return $token;
+	}
+
+	// Protection contre la faille CSRF (Cross Site Request Forgery)
+	function authentificationToken($token_get, $token_session)
+	{
+		// On vérifie que le token de l'URL (via $_GET['token']) soit celui de la session ($_SESSION['token'])
+		if ($token_get == $token_session)
+		{
+			// Authentification réussie, l'accès au contenu est autorisé
+			return true;
+		}
+		else
+		{
+			// Authentification réussie, l'accès au contenu est refusé !
+			return false;
+		}
+	}
+
+	// On vérifie si l'utilisateur s'est connecté
+	function verifierConnexion()
 	{
 	    if (session_status() == PHP_SESSION_NONE)
 	    {
-	    	// echo "Session pas lancée<br><br>";
+	    	// La session n'a pas démarré (la superglobale $_SESSION n'est pas définie)
 	        session_start();
 	    }
 
-	    // var_dump($_SESSION);
-
+	    // Session inexistante: accès refusé !
 	    if (!isset($_SESSION['auth']))
 	    {
 	        header('Location: index.php?error=3');
@@ -344,14 +500,7 @@
 	    }
 	}
 
-	function generateToken($length)
-	{
-	    $alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	    $token = substr(str_shuffle(str_repeat($alphabet, $length)), 0, $length);
-
-	    return $token;
-	}
-
+	// Pour vérifier le contenu des variables notamment les superglobales ($_GET, $_POST, $_SESSION)
 	function debug($variable)
 	{
 		echo "<h3>". print_r($variable, true) . "</h3><br>";

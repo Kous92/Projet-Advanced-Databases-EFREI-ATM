@@ -171,6 +171,62 @@ div.success_box
     font-size: 20px;
 }
 
+/* ==========================================================
+   Tableau du relevé de compte
+   ========================================================== */
+table.display
+{
+    width: 90%;
+    border-spacing: 10px 25px;
+    margin: auto;
+}
+
+table.display td
+{
+    text-align: center;
+    width: 30%;
+}
+
+table.display th.date_op
+{
+    text-align: left;
+    padding-right: 3%;
+}
+
+table.display th.type_op
+{
+    text-align: right;
+    padding-left: 3%;
+}
+
+table.display th.montant
+{
+    text-align: right;
+    padding-left: 3%;
+}
+
+table.display td.type_op
+{
+    padding-left: 10%;
+}
+
+table.display td.montant_positif
+{
+    text-align: right;
+    color: #228B22;
+    padding-left: 3%;
+}
+
+table.display td.montant_depense
+{
+    text-align: right;
+    color: red;
+    padding-left: 3%;
+}
+
+/* ==========================================================
+   Menu des opérations
+   ========================================================== */
 table.action
 {
 	width: 100%;
@@ -288,6 +344,69 @@ input[type="password"]:hover, #valide:hover, #invalide:hover
     color: #057CFB;
 }
 
+table td.montant
+{
+    font-size: 30px; 
+}
+
+table td.input
+{
+    width: 70%;
+    padding-left: 20%;  
+}
+
+table td.symbol
+{
+   font-size: 30px;
+}
+
+table td.ok
+{
+    width: 50%;  
+}
+
+table td.reset
+{
+    width: 50%;
+    padding-left: -20%;
+}
+
+input[type="text"]
+{
+    width: 95%; /* Pour les nombres avec beaucoup de chiffres */
+    padding: 12px 20px;
+    margin: 8px 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #057CFB;
+    z-index: 1;
+    border: 2px solid #057CFB;
+    box-sizing: border-box;
+    font-size: 24px;
+    font-family: 'NeoSansIntel', Arial, sans-serif;
+}
+
+input[type="text"]:focus, #valide:focus, #invalide:focus
+{
+    width: 95%; /* Pour les nombres avec beaucoup de chiffres */
+    background: transparent;
+    box-shadow: 0 0 10px blue;
+    color: #057CFB;
+    z-index: 1;
+    font-size: 24px;
+}
+
+input[type="text"]:hover, #valide:hover, #invalide:hover
+{
+    width: 95%; /* Pour les nombres avec beaucoup de chiffres */
+    background: transparent;
+    box-shadow: 0 0 10px blue;
+    color: #057CFB;
+    z-index: 1;
+    font-size: 24px;
+
+}
+
 /* =================================================================== */
 /* BOUTON DE VALIDATION */
 input[type="submit"]
@@ -305,6 +424,7 @@ input[type="submit"]
     font-size: 20px;
     border-radius: 8px;
     margin-left: 35%;
+    font-family: 'NeoSansIntel', Arial, sans-serif;
 }
 
 /* Au survol: texte et ombre verte */
@@ -318,6 +438,7 @@ input[type="submit"]:hover
     font-size: 20px;
     color: rgba(0, 255, 0, 1);
     margin-left: 35%;
+    font-family: 'NeoSansIntel', Arial, sans-serif;
 }
 
 /* =================================================================== */
@@ -338,6 +459,7 @@ input[type="reset"]
     background: red;
     color: black;
     margin: 15%;
+    font-family: 'NeoSansIntel', Arial, sans-serif;
 }
 
 /* Au survol: texte et ombre rouge */
@@ -354,6 +476,7 @@ input[type="reset"]:hover
     background: black;
     color: red;
     margin: 15%;
+    font-family: 'NeoSansIntel', Arial, sans-serif;
 }
 
 #pied_page

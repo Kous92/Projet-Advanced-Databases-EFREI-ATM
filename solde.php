@@ -1,7 +1,7 @@
 <?php
 	session_start();
 	require_once("atm.php");
-	logged_only();
+	verifierConnexion();
 
 	// debug($_SESSION);
 	// debug($_GET);
@@ -17,7 +17,22 @@
 		$atm = $atm->constructor2($_SESSION['prenom'], $_SESSION['nom'], $_SESSION['id']);
 	}
 
-	$retour = "<a href=\"accueil.php\">Retour</a>"
+	// Authentification et sécurité de la session
+	if ((isset($_GET['token'])) && (isset($_SESSION['token'])))
+	{
+		if (authentificationToken($_GET['token'], $_SESSION['token']) == false)
+		{
+			header('Location: index.php?error=3');
+	    	exit();
+		}
+	}
+	else
+	{
+	    header('Location: index.php?error=3');
+	    exit();
+	}
+
+	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Retour</a>"
 ?>
 
 <!DOCTYPE html>

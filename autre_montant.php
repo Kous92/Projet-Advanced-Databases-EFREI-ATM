@@ -4,7 +4,7 @@
 	verifierConnexion();
 
 	// debug($_SESSION);
-	// debug($_GET);
+	debug($_GET);
 
 	$atm = null;
 	$solde = 0.0;
@@ -25,13 +25,23 @@
 			header('Location: index.php?error=3');
 	    	exit();
 		}
+
+		// Authentification et sécurité de la transaction (le token sera systématiquement détruit après la transaction)
+		if ((isset($_GET['token_retrait'])) && (isset($_SESSION['token_retrait'])))
+		{
+			if (authentificationToken($_GET['token_retrait'], $_SESSION['token_retrait']) == false)
+			{
+				header('Location: accueil.php?error=1');
+		    	exit();
+			}
+		}
 	}
 	else
 	{
 	    header('Location: index.php?error=3');
 	    exit();
 	}
-
+	
 	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Retour</a>"
 ?>
 
@@ -63,9 +73,6 @@
 					}
 
 					$type_carte = $atm->getTypeCarte();
-					$date_naissance = $atm->getDateNaissance();
-					$date_creation = $atm->getDateCreation();
-					$numero_telephone = $atm->getNumeroTelephone();
 
 					if ($type_carte == "MasterCard")
 					{
@@ -80,14 +87,34 @@
 						echo "<p>Type de la carte bancaire: $type_carte</p>";
 					}
 				?>
+				<form action="#" method="POST">
+					<table>
+						<tr>
+							<td colspan="2" class="montant"><label for="montant"><p id="message">Définissez le montant que vous voulez retirer, par tranches de 10€ uniquement.</p></label></td>
+						</tr>
+						
+						<tr>
+							<td class="input"><input type="text" name="montant" id="montant" maxlength="12"></td>
+							<td class="symbol">€</td>
+						</tr>
 
-				<p> Vos informations personnelles liées à votre compte </p>
-				<ul>
-					<li>Compte créé le: <?php echo $date_creation ?></li>
-					<li>Numéro utilisé pour authentifier vos paiements en ligne: <?php echo $numero_telephone ?></li>
-					<li>Date de naissance: <?php echo $date_naissance ?></li>
-				</ul>
+						<tr>
+							<td colspan="2">
+							<?php  
+								if (isset($_GET['error_retrait']))
+								{
+									echo "<div class=\"error_box\">" . $erreur . "</div>";
+								}
+							?>
+							</td>
+						</tr>
 
+						<tr>
+							<td class="ok"><input type="submit" value="Valider" title="Cliquez sur ce bouton pour envoyer les résultats"/></td>
+							<td class="reset">&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value="Réinitialiser" title="Cliquez sur ce bouton pour réinitialiser le formulaire."/></td>
+						</tr>
+					</table>
+				</form>
 				<?php
 					echo "<div class=\"retour\">" . $retour . "</div>";
 				?>
