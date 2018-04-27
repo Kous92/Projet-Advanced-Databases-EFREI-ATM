@@ -1,6 +1,11 @@
 # Projet ADVANCED DATABASES
 
-Créé par Koussaïla BEN MAMAR, en collaboration avec Ahmed ABDULHALIM, Ibrahim EL KARRAT et Alexandre SUHAS.
+Créé par Koussaïla BEN MAMAR, en collaboration avec:
+* Ahmed ABDULHALIM
+* Ibrahim EL KARRAT
+* Alexandre SUHAS.
+
+EFREI Paris M1 Software Engineering Promo 2019
 
 ## Projet officiel du module Advanced Databases en M1 à l'EFREI. Thématique: ATM (Distibuteur de billets). Codé en PHP avec HTML + CSS + MySQL via PHPMyAdmin.
 
@@ -65,3 +70,15 @@ Scripts en PHP avec MySQL, la classe PDO sera utilisée
 # Requêtes MySQL:
 * Authentification de la carte bancaire
   * `SELECT * FROM CarteBancaire WHERE codeSecret =  $code_secret;` (code de 4 chiffres haché en MD5 puis en SHA-256)
+* Identifier le compte après authentification de la carte bancaire
+  * `SELECT clientID_fk FROM CarteBancaire WHERE codeSecret =  $code_secret;` (code de 4 chiffres haché en MD5 puis en SHA-256)
+* Obtenir le solde du compte identifié
+  * `SELECT solde FROM CompteCourant, Clients, CarteBancaire WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
+* Obtenir le type de carte bancaire du compte identifié
+  * `SELECT typeCarte FROM CompteCourant, Clients, CarteBancaire WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
+* Obtenir le nom du client du compte identifié
+  * `SELECT nomClient FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
+* Obtenir le prénom du client du compte identifié
+  * `SELECT prenomClient FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
+* Obtenir la date de naissance du client du compte identifié
+  * `SELECT dateNaissance FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
