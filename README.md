@@ -1,5 +1,7 @@
 # Projet ADVANCED DATABASES
 
+Créé par Koussaïla BEN MAMAR, en collaboration avec Ahmed ABDULHALIM, Ibrahim EL KARRAT et Alexandre SUHAS.
+
 ## Projet officiel du module Advanced Databases en M1 à l'EFREI. Thématique: ATM (Distibuteur de billets). Codé en PHP avec HTML + CSS + MySQL via PHPMyAdmin.
 
 Ce simulateur d'ATM a comme fonctionnalités implémentées:
@@ -59,3 +61,7 @@ Operation
 - dateOperation (DATE)
 
 Scripts en PHP avec MySQL, la classe PDO sera utilisée
+
+# Requêtes MySQL:
+* Authentification de la carte bancaire
+  * `SELECT * FROM CarteBancaire WHERE codeSecret =  $code_secret;` (code de 4 chiffres haché en MD5 puis en SHA-256)
