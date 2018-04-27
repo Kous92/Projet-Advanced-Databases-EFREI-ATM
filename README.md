@@ -67,6 +67,13 @@ Operation
 
 Scripts en PHP avec MySQL, la classe PDO sera utilisée
 
+# Configuration PDO en fonction du localhost -> PDO(hote, nom_db, encodage, nom_utilisateur, mot_de_passe)
+* MAMP (Mac): `$bdd = new PDO('mysql:host=localhost; dbname=efrei_bank; charset=utf8', 'root', 'root');`
+* XAMPP (Windows): `$bdd = new PDO('mysql:host=localhost; dbname=efrei_bank; charset=utf8', 'root', '');`
+* WAMP (Windows): `$bdd = new PDO('mysql:host=localhost; dbname=efrei_bank; charset=utf8', 'root', '');`
+
+## Notez tout de fois que cela peut changer en fonction du localhost où est déployé la base de données PHPMyAdmin s'il y a ou non un mot de passe, où si vous avez manuellement défini le nom d'utilisateur et le mot de passe.
+
 # Requêtes MySQL (avec jointures et sous-requêtes):
 * Authentification de la carte bancaire
   * `SELECT * FROM CarteBancaire WHERE codeSecret =  $code_secret;` (code de 4 chiffres haché en MD5 puis en SHA-256)
