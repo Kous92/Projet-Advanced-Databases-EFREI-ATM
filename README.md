@@ -92,6 +92,11 @@ Scripts en PHP avec MySQL, la classe PDO sera utilisée
   * `SELECT dateOperation FROM Operations WHERE operationID = (SELECT MAX(operationID) FROM Operations, CarteBancaire, Clients, CompteCourant WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = Operations.compteID AND CarteBancaire.clientID_fk = id);` ($id: int, clé primaire de la table)
 * Retrait d'espèces en 2 temps:
   * Ajout de l'opération de retrait sur le relevé de compte:
-    * `INSERT INTO Operations(operationID, compteID, montant, typeOperation, dateOperation) VALUES ($operationID, $compteID, $montant, 'Retrait', $dateOperation);`
+    * `INSERT INTO Operations(operationID, compteID, montant, typeOperation, dateOperation) VALUES ($operationID, $compteID, $montant, 'Retrait', $dateOperation);` ($dateOperation: aujourd'hui => PHP: `date("Y-m-d")`, MySQL: `NOW()`)
   * Mise à jour du solde sur le compte ($nouveau_solde = $solde - $montant)
+    * `UPDATE CompteCourant SET solde = $nouveau_solde WHERE CompteCourant.clientID = (SELECT clientID FROM Clients, CarteBancaire WHERE Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = $id)` ($id: int, clé primaire de la table)
+* Dépôt d'espèces en 2 temps:
+  * Ajout de l'opération de dépôt sur le relevé de compte:
+    * `INSERT INTO Operations(operationID, compteID, montant, typeOperation, dateOperation) VALUES ($operationID, $compteID, $montant, 'Dépôt espèces', $dateOperation);` ($dateOperation: aujourd'hui => PHP: `date("Y-m-d")`, MySQL: `NOW()`)
+  * Mise à jour du solde sur le compte ($nouveau_solde = $solde + $montant)
     * `UPDATE CompteCourant SET solde = $nouveau_solde WHERE CompteCourant.clientID = (SELECT clientID FROM Clients, CarteBancaire WHERE Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = $id)` ($id: int, clé primaire de la table)
