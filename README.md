@@ -1,5 +1,10 @@
 # Projet ADVANCED DATABASES
 
+Projet officiel du module Advanced Databases en M1 à l'EFREI. Thématique: ATM (Distibuteur de billets). Codé en PHP avec HTML + CSS + MySQL via PHPMyAdmin.
+
+Ce simulateur d'ATM a comme fonctionnalités implémentées:
+- Simulation de carte bancaire par code secret de 4 chiffres et authentification par hachages successifs avec MD5 et SHA-256 -> SHA-256(MD5(code))
+
 - Importer la base de données efrei_bank via PHPMyAdmin avec le fichier EFREI_BANK.sql
 
 Tables de la base de données:
@@ -32,6 +37,6 @@ Operation
 - compteID (INT) -> Clé étrangère sur la table CompteCourant (clé primaire clientID)
 - montant (FLOAT 12,2)
 - typeOperation (DATE)
-- dateCreation (DATE)
+- dateOperation (DATE)
 
 Scripts en PHP avec MySQL, la classe PDO sera utilisée
