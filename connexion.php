@@ -18,6 +18,7 @@
 			   Message d'erreur avec $_GET via ? dans le lien
 			   - error = 1: Code non saisi -> $_GET['error'] = 1
 			   - error = 2: Code inférieur à 4 chiffres
+			   - error = 0: Code incorrect
 			*/
 			header('Location: index.php?error=1');
 			exit();
@@ -43,6 +44,8 @@
 					if ($atm->authentification() == true)
 					{
 						session_start();
+
+						// Un token est obligatoire pour sécuriser la session et les opérations
 						$token = generateToken(50);
 						$_SESSION['auth'] = true;
 				    	$_SESSION['token'] = $token;
@@ -53,7 +56,6 @@
 				    	// debug($_SESSION);
 				    	// Redirection vers la page des opérations
 				    	$redirection = "Location: accueil.php?success=0&token=" . $token;
-				    	// header("Location: accueil.php?success=0");
 				    	header($redirection);
 						exit();
 					}
@@ -67,7 +69,7 @@
 				else
 				{
 					// Le code est incorrect: redirection vers la page d'accueil
-					// header('Location: index.php?error=0');
+					header('Location: index.php?error=0');
 					exit();
 				}
 			}

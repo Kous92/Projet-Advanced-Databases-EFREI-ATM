@@ -51,7 +51,6 @@
 <body>
 	<header>
 		<h1>EFREI BANK - Projet Advanced Databases (EFREI M1)</h1>
-		<!-- <h2 id="titre_responsive">EFREI BANK (Projet Advanced Databases)</h2> -->
 	</header>
 	<div id="enveloppe">
 		<div id="contenu">
@@ -66,6 +65,7 @@
 					$date_naissance = $atm->getDateNaissance();
 					$date_creation = $atm->getDateCreation();
 					$numero_telephone = $atm->getNumeroTelephone();
+					$date_derniere_operation = $atm->getDateDerniereOperation();
 
 					if ($type_carte == "MasterCard")
 					{
@@ -86,6 +86,7 @@
 					<li>Compte créé le: <?php echo $date_creation ?></li>
 					<li>Numéro utilisé pour authentifier vos paiements en ligne: <?php echo $numero_telephone ?></li>
 					<li>Date de naissance: <?php echo $date_naissance ?></li>
+					<li>Dernière opération sur le compte: <?php echo $date_derniere_operation ?></li>
 				</ul>
 
 				<?php

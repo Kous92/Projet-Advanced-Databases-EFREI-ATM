@@ -1,4 +1,5 @@
 <?php
+// On détruit chaque attribut de la session
 session_start();
 unset($_SESSION['auth']);
 unset($_SESSION['nom']);

@@ -7,7 +7,6 @@
 	// debug($_GET);
 
 	$atm = null;
-	$solde = 0.0;
 
 	if (isset($_SESSION))
 	{
@@ -18,11 +17,19 @@
 	}
 
 	// Authentification et sécurité de la session
-	if ((isset($_GET['token'])) && (isset($_SESSION['token'])))
+	if ((isset($_GET['token'])) && (isset($_SESSION['token'])) && (isset($_GET['token_depot'])) && (isset($_SESSION['token_depot'])))
 	{
 		if (authentificationToken($_GET['token'], $_SESSION['token']) == false)
 		{
 			header('Location: index.php?error=3');
+	    	exit();
+		}
+
+		// Authentification et sécurité de la transaction (le token sera systématiquement détruit après la transaction)
+		if (authentificationToken($_GET['token_depot'], $_SESSION['token_depot']) == false)
+		{
+			header('Location: accueil.php?error=1');
+			$_SESSION['token_depot'] = "";
 	    	exit();
 		}
 	}
@@ -32,7 +39,7 @@
 	    exit();
 	}
 
-	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Retour</a>"
+	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Retour</a>";
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +53,7 @@
 	<script type="text/javascript" src="JS/script.js"></script>
 	<script type="text/javascript" src="JS/date_heure.js"></script>
 	<meta name="robots" content="noindex">
-	<title>EFREI BANK - Solde</title>
+	<title>EFREI BANK - Dépôt d'espèces</title>
 </head>
 <body>
 	<header>
@@ -55,31 +62,47 @@
 	<div id="enveloppe">
 		<div id="contenu">
 			<div class="zone_affichage">
-					<?php
-						if (isset($_SESSION))
-						{
-							echo "<p id=\"message_client\">$identite, dans votre compte</p>";
-						}
+				<?php
+					if (isset($_SESSION))
+					{
+						echo "<p id=\"message_client\">$identite</p>";
+					}
 
-						$solde = $atm->getSolde();
+					$type_carte = $atm->getTypeCarte();
 
-						if ($solde > 0)
+					if ($type_carte == "MasterCard")
+					{
+						echo '<img src="mastercard_logo.png">';
+					}
+					else if ($type_carte == "Visa")
+					{
+						echo '<img src="visa_logo.png">';
+					}
+					else
+					{
+						echo "<p>Type de la carte bancaire: $type_carte</p>";
+					}
+					
+					if (isset($_GET['montant']))
+					{
+						// L'opération s'est bien déroulée
+						if ($atm->depot($_GET['montant']))
 						{
-							echo "<p>Votre solde est de: <span id=\"positif\">" . $solde . " €</span></p>";
-						}
-						else if ($solde == 0)
-						{
-							// Solde nul
-							echo "<p>Votre solde est de 0 €</p>";
+							$_SESSION['token_depot'] = "";
+							echo "<div class=\"success_box\">Vous avez déposé " . $_GET['montant'] . "€, cette somme a été créditée dans votre compte.</div>";
 						}
 						else
 						{
-							// Le compte est à découvert
-							echo "<p>Vous êtes à découvert avec un solde <span id=\"decouvert\">négatif de " . $solde . " € </span></p>";
+							echo "<div class=\"error_box\">Une erreur est survenue.</div>";
 						}
+					}
+					else
+					{
+						echo "<p id=\"message_client\">ERREUR !</p>";
+					}
 
-						echo "<div class=\"retour\">" . $retour . "</div>";
-					?>
+					echo "<div class=\"retour\">" . $retour . "</div>";
+				?>
 			</div>
 		</div>
 
@@ -90,4 +113,4 @@
 	    </div><!-- Pied de page -->
 	</div>
 </body>
-</html>	
+</html>

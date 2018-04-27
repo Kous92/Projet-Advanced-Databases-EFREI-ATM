@@ -1,5 +1,5 @@
 <?php
-
+	
 	class ATM
 	{
 		private $code_secret;
@@ -33,6 +33,86 @@
 			$instance->bdd_sql = $instance->initialisationMySQL();
 
 			return $instance;
+		}
+
+		// On vérifie que le montant souhaité à retirer soit bien un multiple de 10 euros
+		public function verifierMontantRetrait($montant)
+		{
+			// Un modulo 10 fera l'affaire
+			if (($montant % 10) == 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// On vérifie que le montant souhaité à retirer ne dépasse pas le maximum autorisé de 1 000 euros
+		public function verifierMaximumAutorise($montant)
+		{
+			if ($montant <= 1000)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// On vérifie que le montant souhaité à retirer soit d'au minimum 10 euros
+		public function verifierMinimumAutorise($montant)
+		{
+			if ($montant >= 10)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// On vérifie que le montant souhaité à retirer soit bien un multiple de 5 euros
+		public function verifierMontantDepot($montant)
+		{
+			// Un modulo 5 fera l'affaire
+			if (($montant % 5) == 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// On vérifie que le montant souhaité à retirer ne dépasse pas le maximum autorisé de 1 000 000 euros
+		public function verifierMaximumDepotAutorise($montant)
+		{
+			if ($montant <= 1000000)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// On vérifie que le montant souhaité à déposer soit d'au minimum 5 euros
+		public function verifierMinimumDepotAutorise($montant)
+		{
+			if ($montant >= 5)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		private function initialisationMySQL()
@@ -386,6 +466,43 @@
 	        }
 		}
 
+		public function getDateDerniereOperation()
+		{
+			/* requête SQL préparée, il s'agit de la requête SQL la plus difficile à écrire de l'ensemble du projet.
+			   -> Requête sur la table Operations avec une sous-requête: Jointure des 4 tables avec la clé étrangère clientID_fk */
+			$SQLCommand = "SELECT dateOperation FROM Operations WHERE operationID = (SELECT MAX(operationID) FROM Operations, CarteBancaire, Clients, CompteCourant WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = Operations.compteID AND CarteBancaire.clientID_fk = ?)";
+	        $requete = $this->bdd_sql->prepare($SQLCommand);
+	        $resultat = $requete->execute(array($this->id_compte));
+
+	        // Pas de résultat: requête invalide
+	        if (!$resultat) 
+	        {
+	            die("<p>Erreur: Échec de la requête avec " .$SQLCommand. "</p>");
+	        }
+	        else
+	        {
+	        	// Pas de résultat: requête invalide
+		        if (!$resultat) 
+		        {
+		            die("<p>Erreur: Échec de la requête avec " .$SQLCommand. "</p>");
+		        }
+		        else
+		        {
+		        	if ($requete->rowCount() > 0)
+	    			{
+	    				// Récupération du résultat
+	    				$ligne = $requete->fetch();
+
+	    				return $this->dateFormatFrancais($ligne['dateOperation']);
+	    			}
+	    			else
+	    			{
+	    				return null;
+	    			}
+		        }
+	        }
+		}
+
 		// Retrait d'argent en espèces
 		public function retrait($montant)
 		{
@@ -440,6 +557,64 @@
 		        }
 			}
 			else
+			{
+				return false;
+			}
+		}
+
+		// Dépôt d'argent en espèces
+		public function depot($montant)
+		{
+			/* La procédure de dépôt se déroule en plusieurs étapes:
+			   1) On met à jour la base de données en ajoutant dans le solde le montant déposé
+			   2) L'utilisateur sera systématiquement redirigé
+			*/
+
+			// 1) Vérification du solde
+			$solde = $this->getSolde();
+
+			// Le solde est synchronisé
+			if ($solde != null)
+			{
+				// Processus de retrait, requête UPDATE sur le compte + requête INSERT dans les opérations
+				$SQLCommand = "INSERT INTO Operations(operationID, compteID, montant, typeOperation, dateOperation) VALUES (:operationID, :compteID, :montant, :typeOperation, :dateOperation)";
+
+			    // Requête d'ajout préparée pour plus de sécurité dans la base de données MySQL
+			    $requete = $this->bdd_sql->prepare($SQLCommand);
+			    $requete->bindValue(':operationID', 'NULL', PDO::PARAM_STR); // operationID: clé primaire de la table MySQL.
+			    $requete->bindValue(':compteID', $this->id_compte);
+			    $requete->bindValue(':montant', $montant);
+			    $requete->bindValue(':typeOperation', 'Dépôt espèces', PDO::PARAM_STR);
+			    $requete->bindValue(':dateOperation', date("Y-m-d"), PDO::PARAM_STR);			    
+			    $resultat = $requete->execute();
+
+			    // Pas de résultat: requête invalide
+		        if (!$resultat) 
+		        {
+		            die("<p>Erreur: Échec de la requête avec " .$SQLCommand. "</p>");
+		            return false;
+		        }
+		        else
+		        {
+		        	$nouveau_solde = $solde + $montant;
+
+		        	// On modifie le solde du compte avec une requête préparée un peu complexe: une jointure dans une requête UPDATE requiert une sous requête SELECT avec des jointures.
+		        	$SQLCommand = "UPDATE CompteCourant SET solde = ? WHERE CompteCourant.clientID = (SELECT clientID FROM Clients, CarteBancaire WHERE Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = ?)";
+		        	$requete = $this->bdd_sql->prepare($SQLCommand);
+	        		$resultat2 = $requete->execute(array($nouveau_solde ,$this->id_compte));
+
+	        		if (!$resultat2) 
+			        {
+			            die("<p>Erreur: Échec de la requête avec " .$SQLCommand. "</p>");
+			            return false;
+			        }
+			        else
+			        {
+			        	return true;
+			        }
+		        }
+		    }
+		    else
 			{
 				return false;
 			}

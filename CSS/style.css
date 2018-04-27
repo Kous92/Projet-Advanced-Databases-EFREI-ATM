@@ -140,6 +140,8 @@ div.error_box
 {
 	height: 40px;
 	line-height: 40px;
+    padding-left: 5%;
+    padding-right: 5%;
 	color: white;
 	background-color: red;
 	border-radius: 8px;
@@ -153,11 +155,33 @@ div.error_box
     font-size: 20px;
 }
 
+div.warning_box
+{
+    height: 40px;
+    width: 70%;
+    line-height: 40px;
+    padding-left: 5%;
+    padding-right: 5%;
+    color: white;
+    background-color: #FF6600;
+    border-radius: 8px;
+    border: 1px solid white;
+    word-wrap: break-word;
+    margin: auto;
+    margin-top: 3%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-size: 20px;
+}
+
 div.success_box
 {
 	height: 40px;
 	width: 70%;
 	line-height: 40px;
+    padding-left: 5%;
+    padding-right: 5%;
 	color: white;
 	background-color: #228B22;
 	border-radius: 8px;
@@ -305,7 +329,7 @@ input[type="password"], #valide, #invalide
     margin: 8px 0;
     border-radius: 5px;
     margin-left: 5px;
-    font-size: 15px;
+    font-size: 25px;
     text-align: center;
     display: inline-block;
     border: 2px solid #057CFB;
@@ -321,7 +345,7 @@ input[type="password"]:focus, #valide:focus, #invalide:focus
     margin: 8px 0;
     border-radius: 5px;
     margin-left: 5px;
-    font-size: 15px;
+    font-size: 25px;
     text-align: center;
     display: inline-block;
     box-shadow: 0 0 10px blue;
@@ -336,7 +360,7 @@ input[type="password"]:hover, #valide:hover, #invalide:hover
     margin: 8px 0;
     border-radius: 5px;
     margin-left: 5px;
-    font-size: 15px;
+    font-size: 25px;
     text-align: center;
     display: inline-block;
     box-shadow: 0 0 10px blue;
@@ -386,7 +410,7 @@ input[type="text"]
     font-family: 'NeoSansIntel', Arial, sans-serif;
 }
 
-input[type="text"]:focus, #valide:focus, #invalide:focus
+input[type="text"]:focus
 {
     width: 95%; /* Pour les nombres avec beaucoup de chiffres */
     background: transparent;
@@ -396,7 +420,7 @@ input[type="text"]:focus, #valide:focus, #invalide:focus
     font-size: 24px;
 }
 
-input[type="text"]:hover, #valide:hover, #invalide:hover
+input[type="text"]:hover
 {
     width: 95%; /* Pour les nombres avec beaucoup de chiffres */
     background: transparent;
@@ -405,6 +429,37 @@ input[type="text"]:hover, #valide:hover, #invalide:hover
     z-index: 1;
     font-size: 24px;
 
+}
+
+#invalide
+{
+    width: 95%; /* Pour les nombres avec beaucoup de chiffres */
+    padding: 12px 20px;
+    margin: 8px 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #057CFB;
+    z-index: 1;
+    border: 2px solid red;
+    box-sizing: border-box;
+    font-size: 24px;
+    font-family: 'NeoSansIntel', Arial, sans-serif;
+}
+
+#invalide:focus
+{
+    width: 95%; /* Pour les nombres avec beaucoup de chiffres */
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-shadow: 0 0 10px red;
+}
+
+#invalide:hover
+{
+    width: 95%; /* Pour les nombres avec beaucoup de chiffres */
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-shadow: 0 0 10px red;
 }
 
 /* =================================================================== */

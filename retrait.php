@@ -5,6 +5,7 @@
 
 	// debug($_SESSION);
 	// debug($_GET);
+	
 	$succes = "";
 	$code_succes = 0;
 
@@ -56,51 +57,48 @@
 	<script type="text/javascript" src="JS/script.js"></script>
 	<script type="text/javascript" src="JS/date_heure.js"></script>
 	<meta name="robots" content="noindex">
-	<title>EFREI BANK (Projet Advanced Databases</title>
+	<title>EFREI BANK - Retrait d'espèces</title>
 </head>
 <body>
 	<header>
 		<h1>EFREI BANK - Projet Advanced Databases (EFREI M1)</h1>
-		<!-- <h2 id="titre_responsive">EFREI BANK (Projet Advanced Databases)</h2> -->
 	</header>
 	<div id="enveloppe">
 		<div id="contenu">
-			<!-- <div class="zone_actions"> -->
-				<form action="" method="POST">
+			<form action="" method="POST">
 
-					<p id="message_client">Sélectionnez un montant à retirer</p></label></td>
+				<p id="message_client">Sélectionnez un montant à retirer</p></label></td>
 
-					<?php  
-						if (isset($_GET['success']))
-						{
-							echo "<div class=\"success_box\">" . $succes . "</div>";
-						}
-					?>
+				<?php  
+					if (isset($_GET['success']))
+					{
+						echo "<div class=\"success_box\">" . $succes . "</div>";
+					}
+				?>
 
-					<table class="action">
-						<tr>
-							<td class="left"><?php echo $retrait1 ?></td>
-							<td></td>
-							<td></td>
-							<td class="right"><?php echo $retrait2 ?></td>
-						</tr>
+				<table class="action">
+					<tr>
+						<td class="left"><?php echo $retrait1 ?></td>
+						<td></td>
+						<td></td>
+						<td class="right"><?php echo $retrait2 ?></td>
+					</tr>
 
-						<tr>
-							<td class="left"><?php echo $retrait3 ?></td>
-							<td></td>
-							<td></td>
-							<td class="right"><?php echo $retrait4 ?></td>
-						</tr>
+					<tr>
+						<td class="left"><?php echo $retrait3 ?></td>
+						<td></td>
+						<td></td>
+						<td class="right"><?php echo $retrait4 ?></td>
+					</tr>
 
-						<tr>
-							<td class="left"><?php echo $retrait5 ?></td>
-							<td></td>
-							<td></td>
-							<td class="right"><?php echo $retour ?></td>
-						</tr>
-					</table>
-				</form>
-			<!-- </div> -->
+					<tr>
+						<td class="left"><?php echo $retrait5 ?></td>
+						<td></td>
+						<td></td>
+						<td class="right"><?php echo $retour ?></td>
+					</tr>
+				</table>
+			</form>
 		</div>
 
 		<div id="pied_page">

@@ -4,10 +4,12 @@
 	verifierConnexion();
 
 	// debug($_SESSION);
-	debug($_GET);
+	// debug($_GET);
+	// debug($_POST);
 
 	$atm = null;
 	$solde = 0.0;
+	$erreur_retrait = false;
 
 	if (isset($_SESSION))
 	{
@@ -18,7 +20,7 @@
 	}
 
 	// Authentification et sécurité de la session
-	if ((isset($_GET['token'])) && (isset($_SESSION['token'])))
+	if ((isset($_GET['token'])) && (isset($_SESSION['token'])) && (isset($_GET['token_retrait'])) && (isset($_SESSION['token_retrait'])))
 	{
 		if (authentificationToken($_GET['token'], $_SESSION['token']) == false)
 		{
@@ -27,13 +29,11 @@
 		}
 
 		// Authentification et sécurité de la transaction (le token sera systématiquement détruit après la transaction)
-		if ((isset($_GET['token_retrait'])) && (isset($_SESSION['token_retrait'])))
+		if (authentificationToken($_GET['token_retrait'], $_SESSION['token_retrait']) == false)
 		{
-			if (authentificationToken($_GET['token_retrait'], $_SESSION['token_retrait']) == false)
-			{
-				header('Location: accueil.php?error=1');
-		    	exit();
-			}
+			$_SESSION['token_retrait'] = "";
+			header('Location: accueil.php?error=1');
+	    	exit();
 		}
 	}
 	else
@@ -41,8 +41,55 @@
 	    header('Location: index.php?error=3');
 	    exit();
 	}
-	
-	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Retour</a>"
+
+	if (isset($_POST['montant_retrait']))
+	{
+		// La faille XSS ne doit pas être négligée
+		$montant = htmlspecialchars($_POST['montant_retrait']);
+
+		// Il faut sécuriser impérativement la saisie et protéger la transaction contre les injections SQL !
+		if (is_numeric($montant) && (filter_var(intval($montant), FILTER_VALIDATE_INT)))
+		{	
+			// OK, le montant est valide, on procède au retrait
+			if (($atm->verifierMontantRetrait($montant) == true) && ($atm->verifierMaximumAutorise($montant) == true) && ($atm->verifierMinimumAutorise($montant) == true))
+			{
+				$operation = "Location: operation_retrait.php?token=" . $_SESSION['token'] . "&token_retrait=" . $_SESSION['token_retrait'] . "&montant=" . $montant;
+				header($operation);
+	    		exit();
+			}
+			else if ($atm->verifierMontantRetrait($montant) == false)
+			{
+				$erreur_retrait = true;
+				$erreur = "ERREUR: Le montant de " . $montant . " € est invalide. Veuillez définir un montant multiple de 10€.";
+			}
+			else if ($atm->verifierMaximumAutorise($montant) == false)
+			{
+				$erreur_retrait = true;
+				$erreur = "ERREUR: Le montant de " . $montant . " € dépasse le maximum autorisé de 1 000€.";
+			}
+			else if ($atm->verifierMinimumAutorise($montant) == false)
+			{
+				$erreur_retrait = true;
+				$erreur = "ERREUR: Vous devez définir un montant d'au minimum 10€";
+			}
+		}
+		else
+		{
+			$erreur_retrait = true;
+
+			if (empty($montant))
+			{
+				$erreur = "ERREUR: Veuillez définir un montant à retirer.";
+			}
+			else
+			{
+				$erreur = "ERREUR: La saisie de " . $montant . " est invalide.";
+			}
+		}
+	}
+
+	$cible = "autre_montant.php?token=" . $_SESSION['token'] . "&token_retrait=" . $_SESSION['token_retrait'];
+	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Annuler le retrait</a>";
 ?>
 
 <!DOCTYPE html>
@@ -56,12 +103,11 @@
 	<script type="text/javascript" src="JS/script.js"></script>
 	<script type="text/javascript" src="JS/date_heure.js"></script>
 	<meta name="robots" content="noindex">
-	<title>EFREI BANK - Informations</title>
+	<title>EFREI BANK - Retrait d'espèces</title>
 </head>
 <body>
 	<header>
 		<h1>EFREI BANK - Projet Advanced Databases (EFREI M1)</h1>
-		<!-- <h2 id="titre_responsive">EFREI BANK (Projet Advanced Databases)</h2> -->
 	</header>
 	<div id="enveloppe">
 		<div id="contenu">
@@ -87,21 +133,35 @@
 						echo "<p>Type de la carte bancaire: $type_carte</p>";
 					}
 				?>
-				<form action="#" method="POST">
+
+				<?php echo "<form action=\"" . $cible . "\" method=\"POST\">"; ?>
 					<table>
+						<td colspan="2">
+							<div class="warning_box">Montant maximal autorisé: 1 000€</div><br>
+						</td>
+
 						<tr>
-							<td colspan="2" class="montant"><label for="montant"><p id="message">Définissez le montant que vous voulez retirer, par tranches de 10€ uniquement.</p></label></td>
+							<td colspan="2" class="montant"><label for="montant_retrait"><p id="message">Définissez le montant que vous voulez retirer, par tranches de 10€ uniquement.</p></label></td>
 						</tr>
 						
 						<tr>
-							<td class="input"><input type="text" name="montant" id="montant" maxlength="12"></td>
+							<?php
+								if ($erreur_retrait == true)
+								{
+									echo "<td class=\"input\"><input type=\"text\" name=\"montant_retrait\" id=\"invalide\" value=\"" . $montant. "\" maxlength=\"12\"></td>";
+								}
+								else
+								{
+									echo "<td class=\"input\"><input type=\"text\" name=\"montant_retrait\" id=\"montant_retrait\" maxlength=\"12\"></td>";
+								}
+							?>
 							<td class="symbol">€</td>
 						</tr>
 
 						<tr>
 							<td colspan="2">
 							<?php  
-								if (isset($_GET['error_retrait']))
+								if ($erreur_retrait == true)
 								{
 									echo "<div class=\"error_box\">" . $erreur . "</div>";
 								}

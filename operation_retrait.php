@@ -4,7 +4,7 @@
 	verifierConnexion();
 
 	// debug($_SESSION);
-	debug($_GET);
+	// debug($_GET);
 
 	$atm = null;
 	$solde = 0.0;
@@ -18,7 +18,7 @@
 	}
 
 	// Authentification et sécurité de la session
-	if ((isset($_GET['token'])) && (isset($_SESSION['token'])))
+	if ((isset($_GET['token'])) && (isset($_SESSION['token'])) && (isset($_GET['token_retrait'])) && (isset($_SESSION['token_retrait'])))
 	{
 		if (authentificationToken($_GET['token'], $_SESSION['token']) == false)
 		{
@@ -27,13 +27,11 @@
 		}
 
 		// Authentification et sécurité de la transaction (le token sera systématiquement détruit après la transaction)
-		if ((isset($_GET['token_retrait'])) && (isset($_SESSION['token_retrait'])))
+		if (authentificationToken($_GET['token_retrait'], $_SESSION['token_retrait']) == false)
 		{
-			if (authentificationToken($_GET['token_retrait'], $_SESSION['token_retrait']) == false)
-			{
-				header('Location: accueil.php?error=1');
-		    	exit();
-			}
+			header('Location: accueil.php?error=1');
+			$_SESSION['token_retrait'] = "";
+	    	exit();
 		}
 	}
 	else
@@ -42,7 +40,7 @@
 	    exit();
 	}
 
-	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Retour</a>"
+	$retour = "<a href=\"accueil.php?token=" . $_SESSION['token'] . "\">Retour</a>";
 ?>
 
 <!DOCTYPE html>
@@ -56,12 +54,11 @@
 	<script type="text/javascript" src="JS/script.js"></script>
 	<script type="text/javascript" src="JS/date_heure.js"></script>
 	<meta name="robots" content="noindex">
-	<title>EFREI BANK - Informations</title>
+	<title>EFREI BANK - Retrait d'espèces</title>
 </head>
 <body>
 	<header>
 		<h1>EFREI BANK - Projet Advanced Databases (EFREI M1)</h1>
-		<!-- <h2 id="titre_responsive">EFREI BANK (Projet Advanced Databases)</h2> -->
 	</header>
 	<div id="enveloppe">
 		<div id="contenu">
@@ -89,15 +86,15 @@
 					
 					if (isset($_GET['montant']))
 					{
+						// L'opération s'est bien déroulée
 						if ($atm->retrait($_GET['montant']))
 						{
 							$_SESSION['token_retrait'] = "";
-							echo "<p id=\"message_client\">Vous avez demandé " . $_GET['montant'] . "€<br>
-								  Veuillez recupérer vos billets.</p>";
+							echo "<div class=\"success_box\">Vous avez demandé " . $_GET['montant'] . "€, veuillez recupérer vos billets.</div>";
 						}
 						else
 						{
-							echo "<p id=\"erreur\">ERREUR, solde insuffisant !</p>";
+							echo "<div class=\"error_box\">ERREUR, votre solde est insuffisant !</div>";
 						}
 					}
 					else

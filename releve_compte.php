@@ -46,12 +46,11 @@
 	<script type="text/javascript" src="JS/script.js"></script>
 	<script type="text/javascript" src="JS/date_heure.js"></script>
 	<meta name="robots" content="noindex">
-	<title>EFREI BANK - Informations</title>
+	<title>EFREI BANK - Relevé de compte</title>
 </head>
 <body>
 	<header>
 		<h1>EFREI BANK - Projet Advanced Databases (EFREI M1)</h1>
-		<!-- <h2 id="titre_responsive">EFREI BANK (Projet Advanced Databases)</h2> -->
 	</header>
 	<div id="enveloppe">
 		<div id="contenu">

@@ -79,7 +79,7 @@ CREATE TABLE CompteCourant (
   compteID int(11) UNSIGNED NOT NULL,
   clientID int(11) NOT NULL,
   solde float(12,2) NOT NULL,
-  dateCreation varchar(10) NOT NULL
+  dateCreation date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -126,7 +126,28 @@ INSERT INTO Operations (operationID, compteID, montant, typeOperation, dateOpera
 (13, 4, 1500.00, 'Encaissement chèque', '2018-11-04'),
 (14, 4, 3750.00, 'Crédit virement', '2018-11-04'),
 (15, 4, 1799.99, 'CB', '2018-11-04'),
-(16, 4, 500.00, 'Retrait', '2018-11-04');
+(16, 4, 500.00, 'Retrait', '2018-11-04'),
+(17, 1, 10.00, 'Retrait', '2018-04-25'),
+(18, 1, 100.00, 'Retrait', '2018-04-25'),
+(19, 1, 20.00, 'Retrait', '2018-04-25'),
+(20, 1, 50.00, 'Retrait', '2018-04-25'),
+(21, 1, 10.00, 'Retrait', '2018-04-25'),
+(22, 1, 100.00, 'Retrait', '2018-04-25'),
+(23, 1, 20.00, 'Retrait', '2018-04-25'),
+(24, 3, 50.00, 'Retrait', '2018-04-25'),
+(25, 4, 100.00, 'Retrait', '2018-04-25'),
+(26, 1, 20.00, 'Retrait', '2018-04-26'),
+(27, 1, 10.00, 'Retrait', '2018-04-26'),
+(28, 4, 30.00, 'Retrait', '2018-04-26'),
+(29, 4, 60.00, 'Retrait', '2018-04-26'),
+(30, 4, 750.00, 'Retrait', '2018-04-26'),
+(31, 1, 1200.00, 'Dépôt espèces', '2018-04-26'),
+(32, 1, 1200.00, 'Dépôt espèces', '2018-04-26'),
+(33, 2, 400.00, 'Dépôt espèces', '2018-04-27'),
+(34, 2, 10.00, 'Retrait', '2018-04-27'),
+(35, 2, 50.00, 'Retrait', '2018-04-27'),
+(36, 2, 700.00, 'Retrait', '2018-04-27'),
+(37, 2, 2400.00, 'Dépôt espèces', '2018-04-27');
 
 --
 -- Index pour les tables déchargées
