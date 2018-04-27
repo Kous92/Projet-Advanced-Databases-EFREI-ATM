@@ -5,7 +5,7 @@ Créé par Koussaïla BEN MAMAR, en collaboration avec:
 * Ibrahim EL KARRAT
 * Alexandre SUHAS.
 
-EFREI Paris M1 Software Engineering Promo 2019
+EFREI Paris M1 Software Engineering Promo 2019, 27/04/2018
 
 ## Projet officiel du module Advanced Databases en M1 à l'EFREI. Thématique: ATM (Distibuteur de billets). Codé en PHP avec HTML + CSS + MySQL via PHPMyAdmin.
 
@@ -68,6 +68,7 @@ Operation
 Scripts en PHP avec MySQL, la classe PDO sera utilisée
 
 # Configuration PDO en fonction du localhost -> PDO(hote, nom_db, encodage, nom_utilisateur, mot_de_passe)
+Fichier atm.php dans `private function initialisationMySQL()`
 * MAMP (Mac): `$bdd = new PDO('mysql:host=localhost; dbname=efrei_bank; charset=utf8', 'root', 'root');`
 * XAMPP (Windows): `$bdd = new PDO('mysql:host=localhost; dbname=efrei_bank; charset=utf8', 'root', '');`
 * WAMP (Windows): `$bdd = new PDO('mysql:host=localhost; dbname=efrei_bank; charset=utf8', 'root', '');`
