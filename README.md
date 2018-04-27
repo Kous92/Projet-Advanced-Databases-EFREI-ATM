@@ -67,7 +67,7 @@ Operation
 
 Scripts en PHP avec MySQL, la classe PDO sera utilisée
 
-# Requêtes MySQL:
+# Requêtes MySQL (avec jointures et sous-requêtes):
 * Authentification de la carte bancaire
   * `SELECT * FROM CarteBancaire WHERE codeSecret =  $code_secret;` (code de 4 chiffres haché en MD5 puis en SHA-256)
 * Identifier le compte après authentification de la carte bancaire
@@ -77,8 +77,21 @@ Scripts en PHP avec MySQL, la classe PDO sera utilisée
 * Obtenir le type de carte bancaire du compte identifié
   * `SELECT typeCarte FROM CompteCourant, Clients, CarteBancaire WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
 * Obtenir le nom du client du compte identifié
-  * `SELECT nomClient FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
+  * `SELECT nomClient FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id);` ($id: int, clé primaire de la table)
 * Obtenir le prénom du client du compte identifié
-  * `SELECT prenomClient FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
+  * `SELECT prenomClient FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id);` ($id: int, clé primaire de la table)
 * Obtenir la date de naissance du client du compte identifié
-  * `SELECT dateNaissance FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id;` ($id: int, clé primaire de la table)
+  * `SELECT dateNaissance FROM Clients, CarteBancaire WHERE (CarteBancaire.clientID_fk = Clients.clientID) AND (CarteBancaire.clientID_fk = id);` ($id: int, clé primaire de la table)
+* Obtenir la date de création du compte identifié
+  * `SELECT dateCreation FROM CompteCourant, Clients, CarteBancaire WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = id);` ($id: int, clé primaire de la table)
+* Obtenir le numéro de téléphone du client du compte identifié
+  * `SELECT numeroTelephone FROM CompteCourant, Clients, CarteBancaire WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = id);` ($id: int, clé primaire de la table)
+* Obtenir le relevé complet du compte identifié
+  * `SELECT typeOperation, montant, dateOperation FROM Operations, CarteBancaire, Clients, CompteCourant WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = Operations.compteID AND CarteBancaire.clientID_fk = id);` ($id: int, clé primaire de la table)
+* Obtenir la date de l'opération la plus récente du relevé de compte identifié (la requête la plus difficile à écrire)
+  * `SELECT dateOperation FROM Operations WHERE operationID = (SELECT MAX(operationID) FROM Operations, CarteBancaire, Clients, CompteCourant WHERE CompteCourant.clientID = Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = Operations.compteID AND CarteBancaire.clientID_fk = id);` ($id: int, clé primaire de la table)
+* Retrait d'espèces en 2 temps:
+  * Ajout de l'opération de retrait sur le relevé de compte:
+    * `INSERT INTO Operations(operationID, compteID, montant, typeOperation, dateOperation) VALUES ($operationID, $compteID, $montant, 'Retrait', $dateOperation);`
+  * Mise à jour du solde sur le compte ($nouveau_solde = $solde - $montant)
+    * `UPDATE CompteCourant SET solde = $nouveau_solde WHERE CompteCourant.clientID = (SELECT clientID FROM Clients, CarteBancaire WHERE Clients.clientID AND Clients.clientID = CarteBancaire.clientID_fk AND CarteBancaire.clientID_fk = $id)` ($id: int, clé primaire de la table)
