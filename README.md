@@ -3,7 +3,7 @@
 Créé par Koussaïla BEN MAMAR, en collaboration avec:
 * Ahmed ABDULHALIM
 * Ibrahim EL KARRAT
-* Alexandre SUHAS.
+* Alexandre SUHAS
 
 EFREI Paris M1 Software Engineering Promo 2019, 27/04/2018
 
@@ -73,7 +73,7 @@ Fichier atm.php dans `private function initialisationMySQL()`
 * XAMPP (Windows): `$bdd = new PDO('mysql:host=localhost; dbname=efrei_bank; charset=utf8', 'root', '');`
 * WAMP (Windows): `$bdd = new PDO('mysql:host=localhost; dbname=efrei_bank; charset=utf8', 'root', '');`
 
-## Notez tout de fois que cela peut changer en fonction du localhost où est déployé la base de données PHPMyAdmin s'il y a ou non un mot de passe, où si vous avez manuellement défini le nom d'utilisateur et le mot de passe.
+## Notez tout de fois que cela peut changer en fonction du localhost où est déployé la base de données PHPMyAdmin s'il y a ou non un mot de passe, ou si vous avez manuellement défini le nom d'utilisateur et le mot de passe.
 
 # Requêtes MySQL (avec jointures et sous-requêtes):
 * Authentification de la carte bancaire
